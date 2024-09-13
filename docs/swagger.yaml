@@ -1,0 +1,149 @@
+definitions:
+  models.AuthInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.DownloadYoutubeVideoInput:
+    properties:
+      youtube_url:
+        type: string
+    type: object
+  models.RegisterInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  models.TokenResponse:
+    properties:
+      token:
+        type: string
+    required:
+    - token
+    type: object
+  models.User:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  models.VideoResponse:
+    properties:
+      url:
+        type: string
+    type: object
+host: 127.0.0.1:3000
+info:
+  contact:
+    name: Yasin Çakır
+    url: https://www.linkedin.com/in/yasincakir26/
+  title: Simple JWT Auth API With Gin Framework
+  version: "1.0"
+paths:
+  /users/auth:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Auth
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/models.AuthInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TokenResponse'
+      summary: Auth for users
+      tags:
+      - users
+  /users/me:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      security:
+      - BearerAuth: []
+      summary: User Detail
+      tags:
+      - users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Register
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Register for users
+      tags:
+      - users
+  /youtube/download:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Download Youtube Video
+        in: body
+        name: download
+        required: true
+        schema:
+          $ref: '#/definitions/models.DownloadYoutubeVideoInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.VideoResponse'
+      summary: Youtube Download Video
+      tags:
+      - youtube-downloader
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

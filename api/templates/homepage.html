@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube Downloader</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      
+      .container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 300px;
+        text-align: center;
+      }
+      
+      .container h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+      }
+      
+      .container input[type='text'] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      
+      .container button {
+        width: 100%;
+        padding: 10px;
+        background-color: #ff0000;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      
+      .container button:hover {
+        background-color: #cc0000;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+      <h1>YouTube Video İndirici</h1>
+      <input type="text" placeholder="YouTube video URL'sini girin" id="video-url" />
+      <button onclick="downloadVideo()">İndir</button>
+    </div>
+
+    <script>
+      async function downloadVideo() {
+        const videoUrl = document.getElementById('video-url').value
+      
+        if (!videoUrl) {
+          alert("Lütfen geçerli bir YouTube video URL'si girin.")
+          return
+        }
+      
+        try {
+          const response = await fetch('/api/youtube/download', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ youtube_url: videoUrl })
+          })
+      
+          if (!response.ok) {
+            throw new Error('Video indirilemedi.')
+          }
+      
+          const data = await response.json()
+      
+          // Sunucudan dönen video URL'si
+          const videoDownloadUrl = data.url
+      
+          // Video otomatik indirme işlemi
+          const a = document.createElement('a')
+          a.href = videoDownloadUrl
+          a.download = '' // Sunucudan dönen dosya adı kullanılır
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        } catch (error) {
+          console.error('Hata:', error)
+          alert('Video indirilemedi. Lütfen tekrar deneyin.')
+        }
+      }
+    </script>
+  </body>
+</html>
